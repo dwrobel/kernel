@@ -1,61 +1,6 @@
 # We have to override the new %%install behavior because, well... the kernel is special.
 %global __spec_install_pre %{___build_pre}
 
-# For a stable, released kernel, released_kernel should be 1. For rawhide
-# and/or a kernel built from an rc or git snapshot, released_kernel should
-# be 0.
-%global released_kernel 1
-%define rpi_gitshort 6abac13
-
-# baserelease defines which build revision of this kernel version we're
-# building.  We used to call this fedora_build, but the magical name
-# baserelease is matched by the rpmdev-bumpspec tool, which you should use.
-#
-# We used to have some extra magic weirdness to bump this automatically,
-# but now we don't.  Just use: rpmdev-bumpspec -c 'comment for changelog'
-# When changing base_sublevel below or going from rc to a final kernel,
-# reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
-# scripts/rebase.sh should be made to do that for you, actually.
-#
-# NOTE: baserelease must be > 0 or bad things will happen if you switch
-#       to a released kernel (released version will be < rc version)
-#
-# For non-released -rc kernels, this will be appended after the rcX and
-# gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
-#
-%global baserelease 1
-%global fedora_build %{baserelease}
-
-# base_sublevel is the kernel version we're starting with and patching
-# on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
-# which yields a base_sublevel of 0.
-%define base_sublevel 8
-
-## If this is a released kernel ##
-%if 0%{?released_kernel}
-
-# Do we have a -stable update to apply?
-%define stable_update 6
-# Set rpm version accordingly
-%if 0%{?stable_update}
-%define stablerev %{stable_update}
-%define stable_base %{stable_update}
-%endif
-%define rpmversion 4.%{base_sublevel}.%{stable_update}
-
-## The not-released-kernel case ##
-%else
-# The next upstream release sublevel (base_sublevel+1)
-%define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
-# The rc snapshot level
-%define rcrev 0
-# The git snapshot level
-%define gitrev 0
-# Set rpm version accordingly
-%define rpmversion 4.%{upstream_sublevel}.0
-%endif
-# Nb: The above rcrev and gitrev values automagically define Source1 and Source2 below.
-
 # What parts do we want to build?  We must build at least one kernel.
 # These are the kernels that are built IF the architecture allows it.
 # All should default to 1 (enabled) and be flipped to 0 (disabled)
@@ -94,6 +39,69 @@
 # Build the RPi bcm270x linux kernel port
 %define with_bcm270x    %{?_without_bcm270x:    0} %{?!_without_bcm270x: 1}
 
+# By default build without rt-preempt version
+%define with_rt_preempt %{?_with_rt_preempt:    1} %{?!_with_rt_preempt: 0}
+
+# For a stable, released kernel, released_kernel should be 1. For rawhide
+# and/or a kernel built from an rc or git snapshot, released_kernel should
+# be 0.
+%global released_kernel 1
+%define rpi_gitshort 6abac13
+
+# baserelease defines which build revision of this kernel version we're
+# building.  We used to call this fedora_build, but the magical name
+# baserelease is matched by the rpmdev-bumpspec tool, which you should use.
+#
+# We used to have some extra magic weirdness to bump this automatically,
+# but now we don't.  Just use: rpmdev-bumpspec -c 'comment for changelog'
+# When changing base_sublevel below or going from rc to a final kernel,
+# reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
+# scripts/rebase.sh should be made to do that for you, actually.
+#
+# NOTE: baserelease must be > 0 or bad things will happen if you switch
+#       to a released kernel (released version will be < rc version)
+#
+# For non-released -rc kernels, this will be appended after the rcX and
+# gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
+#
+%global baserelease 2
+
+%if %{with_rt_preempt}
+%global rtrelease rt5
+%global fedora_build %{baserelease}.%{rtrelease}
+%else
+%global fedora_build %{baserelease}
+%endif
+
+# base_sublevel is the kernel version we're starting with and patching
+# on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
+# which yields a base_sublevel of 0.
+%define base_sublevel 8
+
+## If this is a released kernel ##
+%if 0%{?released_kernel}
+
+# Do we have a -stable update to apply?
+%define stable_update 6
+# Set rpm version accordingly
+%if 0%{?stable_update}
+%define stablerev %{stable_update}
+%define stable_base %{stable_update}
+%endif
+%define rpmversion 4.%{base_sublevel}.%{stable_update}
+
+## The not-released-kernel case ##
+%else
+# The next upstream release sublevel (base_sublevel+1)
+%define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
+# The rc snapshot level
+%define rcrev 0
+# The git snapshot level
+%define gitrev 0
+# Set rpm version accordingly
+%define rpmversion 4.%{upstream_sublevel}.0
+%endif
+# Nb: The above rcrev and gitrev values automagically define Source1 and Source2 below.
 
 %if 0%{!?nopatches:1}
 %define nopatches 0
@@ -195,6 +203,9 @@ BuildRequires: kmod, patch, bash, sh-utils, tar
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
+%if %{with_rt_preempt}
+BuildRequires: quilt
+%endif
 
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
@@ -223,6 +234,12 @@ Source99: filter-modules.sh
 # kernel config modifications 
 Source1000: bcm270x.cfg
 Source1100: bcm283x.cfg
+
+%if %{with_rt_preempt}
+# rt kernel config modification
+Source1500: https://www.kernel.org/pub/linux/kernel/projects/rt/4.%{base_sublevel}/patches-%{rpmversion}-%{rtrelease}.tar.xz
+Source1501: config-fedberry-rt.cfg
+%endif
 
 # Sources for kernel-tools
 Source2000: cpupower.service
@@ -775,6 +792,14 @@ for i in %{patches}; do
 %endif
 done
 
+%if %{with_rt_preempt}
+# apply rt kernel patches
+unxz -c %{SOURCE1500} | tar -xf - -C .
+# we don't want to use the localversion.patch
+sed -i 's/\(localversion.patch\)/# \1/g' patches/series
+quilt push -a
+%endif
+
 # END OF PATCH APPLICATIONS
 %endif
 
@@ -875,6 +900,11 @@ BuildKernel() {
     cp %{SOURCE1000} .
     # merge fedberry kernel config fragments
     scripts/kconfig/merge_config.sh -m -r .config bcm270x.cfg
+    %endif
+
+    %if %{with_rt_preempt}
+    # merge rt-preempt kernel config changes
+    scripts/kconfig/merge_config.sh -m -r .config %{SOURCE1501}
     %endif
 
     echo USING ARCH=$Arch
@@ -1488,6 +1518,9 @@ fi
 #
 
 %changelog
+* Wed Nov 23 2016 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.8.6-2
+- Add support for building RT PREEMPT kernel version
+
 * Wed Nov 02 2016 Vaughan <devel at agrez dot net> - 4.8.6-1
 - Add build support for bcm2708 kernels
 - Update to stable kernel patch v4.8.6
