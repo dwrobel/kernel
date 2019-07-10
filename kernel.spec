@@ -66,7 +66,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 8ea4810a9
@@ -207,7 +207,7 @@ Summary: The Linux kernel for the Raspberry Pi (BCM283x)
 URL: http://www.kernel.org
 %else
 %if %{_target_cpu} == armv7hl
-Summary: The BCM2709 Linux kernel port for the Raspberry Pi 2 and 3 Model B
+Summary: The BCM2711 Linux kernel port for the Raspberry Pi 4 Model B
 %else
 Summary: The BCM2708 Linux kernel port for the Raspberry Pi Model A, B and Zero
 %endif
@@ -329,10 +329,6 @@ Source1: https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.%{base_sublevel}-g
 %endif
 
 %if !%{nopatches}
-## Patches for bcm283x builds (append patches with bcm283x)
-#script for adding device tree trailer to the kernel img
-Patch10: bcm283x-add-mkknlimg-knlinfo.patch
-
 ## Patches for bcm270x builds (append patches with bcm270x)
 #RasperryPi patch
 Patch100: bcm270x-linux-rpi-4.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
@@ -960,7 +956,7 @@ BuildKernel() {
     %endif
     %if %{bcm270x}
     %if %{_target_cpu} == armv7hl
-    make bcm2709_defconfig
+    make bcm2711_defconfig
     %else
     make bcmrpi_defconfig
     %endif
@@ -1012,15 +1008,8 @@ BuildKernel() {
     # into consideration when performing disk space calculations. (See bz #530778)
     dd if=/dev/zero of=%{buildroot}/boot/initramfs-$KernelVer.img bs=1M count=20
 
-    # add the device tree trailer to the kernel img
-    chmod +x scripts/mkknlimg
-    %if !%{bcm270x}
-    scripts/mkknlimg --dtok --283x $KernelImage %{buildroot}/%{image_install_path}/$InstallName-$KernelVer
-    %else
-    scripts/mkknlimg --dtok --270x $KernelImage %{buildroot}/%{image_install_path}/$InstallName-$KernelVer
-    %endif
-    chmod 755 %{buildroot}/%{image_install_path}/$InstallName-$KernelVer
-    cp %{buildroot}/%{image_install_path}/$InstallName-$KernelVer %{buildroot}/lib/modules/$KernelVer/$InstallName
+    install -m 0755 -D $KernelImage %{buildroot}/%{image_install_path}/$InstallName-$KernelVer
+    cp -a %{buildroot}/%{image_install_path}/$InstallName-$KernelVer %{buildroot}/lib/modules/$KernelVer/$InstallName
 
     # hmac sign the kernel for FIPS
     echo "Creating hmac file: %{buildroot}/%{image_install_path}/.vmlinuz-$KernelVer.hmac"
@@ -1441,6 +1430,7 @@ cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/dtb/overlays/* /boot/overlays/\
 %if %{_target_cpu} == armv7hl\
 cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/dtb/bcm2709* /boot/\
 cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/dtb/bcm2710* /boot/\
+cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/dtb/bcm2711* /boot/\
 %else\
 cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/dtb/bcm2708* /boot/\
 %endif\
@@ -1614,6 +1604,9 @@ fi
 
 
 %changelog
+* Tue Jul 09 2019 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.57-2.rpi
+- Build for RPi 4 Model B
+
 * Mon Jul 08 2019 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.57-1
 - Update to stable kernel patch v4.19.57
 - Sync RPi patch to git revision: 8ea4810a9f2d0c510f6a8fd56805e82ac76904a3
