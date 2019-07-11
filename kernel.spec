@@ -66,7 +66,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 8ea4810a9
@@ -1418,7 +1418,7 @@ fi\
 %{expand:%%posttrans %{?1:%{1}-}core}\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 %if %{_target_cpu} == armv7hl\
-cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/vmlinuz /%{image_install_path}/kernel7.img\
+cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/vmlinuz /%{image_install_path}/kernel7l.img\
 %else\
 cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/vmlinuz /%{image_install_path}/kernel.img\
 %endif\
@@ -1604,6 +1604,9 @@ fi
 
 
 %changelog
+* Wed Jul 10 2019 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.57-3.rpi
+- Change kernel image name to kernel7l.img
+
 * Tue Jul 09 2019 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.57-2.rpi
 - Build for RPi 4 Model B
 
