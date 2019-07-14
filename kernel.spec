@@ -66,7 +66,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 5
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 8ea4810a9
@@ -1604,6 +1604,9 @@ fi
 
 
 %changelog
+* Sun Jul 14 2019 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.57-5.rpi
+- Enable BPF/cgroup based firewalling
+
 * Fri Jul 12 2019 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.57-4.rpi
 - Enable XFS support
 
