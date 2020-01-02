@@ -69,7 +69,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 3c235dcfe
@@ -426,6 +426,7 @@ This package is required by %{name}-debuginfo subpackages.
 It provides the kernel source files common to all builds.
 
 
+# with_perf {
 %if %{with_perf}
 %package -n perf
 Summary: Performance monitoring for the Linux kernel
@@ -472,9 +473,11 @@ This package provides debug information for the perf python bindings.
 
 # the python_sitearch macro should already be defined from above
 %{expand:%%global _find_debuginfo_opts %{?_find_debuginfo_opts} -p '.*%%{python_sitearch}/perf.so(\.debug)?|XXX' -o python2-perf-debuginfo.list}
-%endif # with_perf
+%endif
+# } with_perf
 
 
+# with_tools {
 %if %{with_tools}
 %package -n kernel-tools
 Summary: Assortment of tools for the Linux kernel
@@ -529,7 +532,8 @@ This package provides debug information for package kernel-tools.
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
 %{expand:%%global _find_debuginfo_opts %{?_find_debuginfo_opts} -p '.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|.*%%{_bindir}/lsgpio(\.debug)?|.*%%{_bindir}/gpio-hammer(\.debug)?|.*%%{_bindir}/gpio-event-mon(\.debug)?|.*%%{_bindir}/iio_event_monitor(\.debug)?|.*%%{_bindir}/iio_generic_buffer(\.debug)?|.*%%{_bindir}/lsiio(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
-%endif # with_tools
+%endif
+# } with_tools
 
 
 #
@@ -1514,6 +1518,7 @@ fi
 /usr/include/*
 %endif
 
+# with_perf {
 %if %{with_perf}
 %files -n perf
 %defattr(-,root,root)
@@ -1539,8 +1544,10 @@ fi
 %files -f python2-perf-debuginfo.list -n python2-perf-debuginfo
 %defattr(-,root,root)
 %endif
-%endif # with_perf
+%endif
+# } with_perf
 
+# with_tools {
 %if %{with_tools}
 %files -n kernel-tools -f cpupower.lang
 %defattr(-,root,root)
@@ -1570,7 +1577,8 @@ fi
 %files -n kernel-tools-libs-devel
 %{_libdir}/libcpupower.so
 %{_includedir}/cpufreq.h
-%endif # with_perf
+%endif
+# } with_perf
 
 # empty meta-package
 %files
@@ -1633,6 +1641,9 @@ fi
 
 
 %changelog
+* Thu Jan 02 2020 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.83-2.rpi
+- Fix extra tokens (for f31) at the end of %%endif directives
+
 * Sat Oct 26 2019 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 4.19.80-1.rpi
 - Update to stable kernel patch v4.19.80
 - Sync RPi patch to git revision: 3893148254d660a21294cfc65236be9a2f703189
