@@ -51,6 +51,10 @@
 # Build a bcm2711 (RPi4) kernel
 %define with_rpi4       %{?_with_rpi4:       1} %{?!_with_rpi4: 0}
 
+# Build with ASIX AX88179 based USB 3.0 Ethernet Devices vendor source code driver
+# Workaround for https://github.com/raspberrypi/linux/issues/3401 kernel panic
+%define with_asix_vendor_driver %{?_with_asix_vendor_driver: 1} %{?!_with_asix_vendor_driver: 0}
+
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
@@ -68,7 +72,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 65caf603f
@@ -363,6 +367,10 @@ Source2: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{upstream_subleve
 Source1: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
+%endif
+
+%if %{with_asix_vendor_driver}
+Source88179: https://www.asix.com.tw/FrootAttach/driver/AX88179_178A_LINUX_DRIVER_v1.20.0_SOURCE.tar.bz2
 %endif
 
 %if !%{nopatches}
@@ -872,6 +880,13 @@ for i in %{patches}; do
     fi
 %endif
 done
+
+%if %{with_asix_vendor_driver}
+# Replace the original code with the one from vendor
+for i in ax88179_178a.c ax88179_178a.h; do
+    tar -jxf %{SOURCE88179} --no-anchored --to-stdout $i >drivers/net/usb/$i
+done
+%endif
 
 %if %{with_rt_preempt}
 # apply rt kernel patches
@@ -1650,6 +1665,9 @@ fi
 
 
 %changelog
+* Sat Sep 12 2020 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.4.64-2.rpi
+- Allow to compile ASIX AX88179 vendor driver, fixes raspberrypi/linux/3401
+
 * Fri Sep 11 2020 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.4.64-1.rpi
 - Update to stable kernel patch v5.4.64
 - Sync RPi patch to git revision: 65caf603f3b1c43f4c92939f7fbb7149e054f486
