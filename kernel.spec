@@ -68,7 +68,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 6f921e980
@@ -1650,6 +1650,9 @@ fi
 
 
 %changelog
+* Mon May 09 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.32-2.rpi
+- Enable Pressure Stall Information config option
+
 * Thu Mar 31 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.32-1.rpi
 - Update to stable kernel patch v5.15.32
 - Sync RPi patch to git revision: 6f921e98008589258f97243fb6658d09750f0a2f
