@@ -68,10 +68,10 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 2cca26701
+%global rpi_gitshort 97be5486a
 
 %global build_release %{baserelease}
 
@@ -114,7 +114,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 38
+%define stable_update 43
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -1650,6 +1650,11 @@ fi
 
 
 %changelog
+* Fri May 27 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.43-2.rpi
+- Update to stable kernel patch v5.15.43
+- Sync RPi patch to git revision: 97be5486aeff2253079e75fc3222fbe66118cf12
+- Append bpf to CONFIG_LSM
+
 * Tue May 10 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.38-1.rpi
 - Update to stable kernel patch v5.15.38
 - Sync RPi patch to git revision: 2cca267016006654836c46bdd8efa8f9b6402e5d
