@@ -68,7 +68,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 5
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 97be5486a
@@ -259,6 +259,7 @@ BuildRequires: binutils
 BuildRequires: bison
 BuildRequires: bzip2
 BuildRequires: diffutils
+BuildRequires: elfutils-libelf-devel
 BuildRequires: findutils
 BuildRequires: flex
 BuildRequires: gawk
@@ -1651,6 +1652,10 @@ fi
 
 
 %changelog
+* Tue May 31 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.43-5.rpi
+- Add missing BR for PBF
+- More bpf related config adjustments
+
 * Tue May 31 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.43-3.rpi
 - Revert "cgroup: Disable cgroup "memory" by default" patch
 
