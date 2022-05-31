@@ -68,7 +68,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 97be5486a
@@ -371,6 +371,7 @@ Source1: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{base_sublevel}-g
 Patch100: bcm270x-linux-rpi-5.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
 
 ## Patches for both builds (bcm270x & bcm283x)
+Patch140: 0001-Revert-cgroup-Disable-cgroup-memory-by-default.patch
 Patch150: 0001-perf-build-fix-epel8.patch
 
 # Custom bootup logo
@@ -1650,6 +1651,9 @@ fi
 
 
 %changelog
+* Tue May 31 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.43-3.rpi
+- Revert "cgroup: Disable cgroup "memory" by default" patch
+
 * Fri May 27 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.43-2.rpi
 - Update to stable kernel patch v5.15.43
 - Sync RPi patch to git revision: 97be5486aeff2253079e75fc3222fbe66118cf12
