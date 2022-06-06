@@ -68,10 +68,10 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort b52941068
+%global rpi_gitshort 9b5737276
 
 %global build_release %{baserelease}
 
@@ -1652,6 +1652,9 @@ fi
 
 
 %changelog
+* Mon Jun 06 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.45-2.rpi
+- Sync RPi patch to git revision: 9b5737276bd605181fbd48b5483c3a805001ca9f
+
 * Mon Jun 06 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.45-1.rpi
 - Update to stable kernel patch v5.15.45
 - Sync RPi patch to git revision: b52941068bcc4f64501e4719103d3e4000ed4873
