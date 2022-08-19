@@ -68,7 +68,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 91b21aac2
@@ -277,6 +277,7 @@ BuildRequires: perl-interpreter
 BuildRequires: perl-Carp
 BuildRequires: perl-devel
 BuildRequires: perl-generators
+BuildRequires: python3-devel
 BuildRequires: redhat-rpm-config
 BuildRequires: tar
 BuildRequires: xz
@@ -288,7 +289,6 @@ BuildRequires: elfutils-devel
 BuildRequires: zlib-devel
 BuildRequires: binutils-devel
 BuildRequires: newt-devel
-BuildRequires: python3-devel
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: audit-libs-devel
 BuildRequires: xmlto
@@ -1652,6 +1652,9 @@ fi
 
 
 %changelog
+* Fri Aug 19 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.56-2.rpi
+- Add unconditionally BR for python3-devel
+
 * Thu Aug 18 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.56-1.rpi
 - Update to stable kernel patch v5.15.56
 - Sync RPi patch to git revision: 91b21aac222f8fccbbc58a26ca252836e36c347d
