@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 1fb2f7237
+%global rpi_gitshort 32d4906ff
 
 %global build_release %{baserelease}
 
@@ -114,7 +114,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 78
+%define stable_update 89
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -1652,6 +1652,10 @@ fi
 
 
 %changelog
+* Wed Jan 25 2023 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.89-1.rpi
+- Update to stable kernel patch v5.15.89
+- Sync RPi patch to git revision: 3bcc86eb3ed952c22ceecce8932dde72ea01f8cc
+
 * Fri Nov 18 2022 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.78-1.rpi
 - Update to stable kernel patch v5.15.78
 - Sync RPi patch to git revision: 1fb2f72375062aa132961f9d9b8d61eb4ae11069
