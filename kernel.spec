@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 32d4906ff
+%global rpi_gitshort d12928850
 
 %global build_release %{baserelease}
 
@@ -108,20 +108,20 @@
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 15
+%define base_sublevel 1
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 89
+%define stable_update 15
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
 %define stable_base %{stable_update}
 %endif
-%define rpmversion 5.%{base_sublevel}.%{stable_update}
+%define rpmversion 6.%{base_sublevel}.%{stable_update}
 
 ## The not-released-kernel case ##
 %else
@@ -177,7 +177,7 @@
 %endif
 
 # The kernel tarball/base version
-%define kversion 5.%{base_sublevel}
+%define kversion 6.%{base_sublevel}
 
 # Default kernel image name (compressed)
 %define install_name vmlinuz
@@ -321,7 +321,7 @@ BuildRequires: gcc-%{_build_arch}-linux-gnu
 %define cross_opts CROSS_COMPILE=%{_build_arch}-linux-gnu-
 %endif
 
-Source0: https://www.kernel.org/pub/linux/kernel/v5.x/linux-%{kversion}.tar.xz
+Source0: https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{kversion}.tar.xz
 Source16: mod-extra.list
 Source17: mod-extra.sh
 Source99: filter-modules.sh
@@ -346,7 +346,7 @@ Source2001: cpupower.config
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-Source1: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{base_sublevel}.%{stable_base}.xz
+Source1: https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.%{base_sublevel}.%{stable_base}.xz
 %endif
 
 # non-released_kernel case
@@ -354,14 +354,14 @@ Source1: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{base_sublevel}.%
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Source1: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{upstream_sublevel}-rc%{rcrev}.xz
+Source1: https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-Source2: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
+Source2: https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-Source1: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{base_sublevel}-git%{gitrev}.xz
+Source1: https://www.kernel.org/pub/linux/kernel/v6.x/patch-5.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 %endif
@@ -369,7 +369,7 @@ Source1: https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.%{base_sublevel}-g
 %if !%{nopatches}
 ## Patches for bcm270x builds (append patches with bcm270x)
 #RasperryPi patch
-Patch100: bcm270x-linux-rpi-5.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
+Patch100: bcm270x-linux-rpi-6.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
 
 ## Patches for both builds (bcm270x & bcm283x)
 Patch140: 0001-Revert-cgroup-Disable-cgroup-memory-by-default.patch
@@ -728,20 +728,20 @@ ApplyOptionalPatch()
 
 # Update to latest upstream.
 %if 0%{?released_kernel}
-%define vanillaversion 5.%{base_sublevel}
+%define vanillaversion 6.%{base_sublevel}
 # non-released_kernel case
 %else
 %if 0%{?rcrev}
-%define vanillaversion 5.%{upstream_sublevel}-rc%{rcrev}
+%define vanillaversion 6.%{upstream_sublevel}-rc%{rcrev}
 %if 0%{?gitrev}
-%define vanillaversion 5.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
+%define vanillaversion 6.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-%define vanillaversion 5.%{base_sublevel}-git%{gitrev}
+%define vanillaversion 6.%{base_sublevel}-git%{gitrev}
 %else
-%define vanillaversion 5.%{base_sublevel}
+%define vanillaversion 6.%{base_sublevel}
 %endif
 %endif
 %endif
@@ -1652,6 +1652,10 @@ fi
 
 
 %changelog
+* Tue Mar 07 2023 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.1.15-1.rpi
+- Update to stable kernel patch v6.1.15
+- Sync RPi patch to git revision: d1292885062c08dbc9ffe89d52819ec360bc9fec
+
 * Wed Jan 25 2023 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 5.15.89-1.rpi
 - Update to stable kernel patch v5.15.89
 - Sync RPi patch to git revision: 3bcc86eb3ed952c22ceecce8932dde72ea01f8cc
