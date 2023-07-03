@@ -1,9 +1,10 @@
-From b32d6b162899dacd8e833dcf58e193dd57091858 Mon Sep 17 00:00:00 2001
-From: Damian Wrobel <dwrobel@ertelnet.rybnik.pl>
-Date: Tue, 31 May 2022 20:13:37 +0200
-Subject: [PATCH] Revert "cgroup: Disable cgroup "memory" by default"
+This is rebased version of the revert generated using:
+    git diff dc419608fb4e13bf1e33e6add31860730dd953fa \
+    ..a1c449d00ff8ce2c5fcea5f755df682d1f6bc2ef kernel/cgroup/cgroup.c
 
-This reverts commit 16f8c6bc6e901dcf4402e6de79e630ea8f942c41:
+Previous version of this patch simply reverted the following commit:
+16f8c6bc6e901dcf4402e6de79e630ea8f942c41
+
   Author: Phil Elwell <phil@raspberrypi.org>
   Date:   Mon Nov 27 17:14:54 2017 +0000
 
@@ -20,14 +21,13 @@ This reverts commit 16f8c6bc6e901dcf4402e6de79e630ea8f942c41:
 
 Signed-off-by: Damian Wrobel <dwrobel@ertelnet.rybnik.pl>
 ---
- kernel/cgroup/cgroup.c | 38 --------------------------------------
- 1 file changed, 38 deletions(-)
+
 
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4cb09fcdc16f6..de8b4fa1e1fd6 100644
+index cfec96e417c28..2380c4daef33d 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -5824,9 +5824,6 @@ int __init cgroup_init_early(void)
+@@ -6060,9 +6060,6 @@ int __init cgroup_init_early(void)
  	return 0;
  }
  
@@ -37,9 +37,9 @@ index 4cb09fcdc16f6..de8b4fa1e1fd6 100644
  /**
   * cgroup_init - cgroup initialization
   *
-@@ -5865,12 +5862,6 @@ int __init cgroup_init(void)
+@@ -6096,12 +6093,6 @@ int __init cgroup_init(void)
  
- 	mutex_unlock(&cgroup_mutex);
+ 	cgroup_unlock();
  
 -	/*
 -	 * Apply an implicit disable, knowing that an explicit enable will
@@ -50,7 +50,7 @@ index 4cb09fcdc16f6..de8b4fa1e1fd6 100644
  	for_each_subsys(ss, ssid) {
  		if (ss->early_init) {
  			struct cgroup_subsys_state *css =
-@@ -6455,10 +6446,6 @@ static int __init cgroup_disable(char *str)
+@@ -6739,10 +6730,6 @@ static int __init cgroup_disable(char *str)
  			    strcmp(token, ss->legacy_name))
  				continue;
  
@@ -61,7 +61,7 @@ index 4cb09fcdc16f6..de8b4fa1e1fd6 100644
  			static_branch_disable(cgroup_subsys_enabled_key[i]);
  			pr_info("Disabling %s control group subsystem\n",
  				ss->name);
-@@ -6477,31 +6464,6 @@ static int __init cgroup_disable(char *str)
+@@ -6761,31 +6748,6 @@ static int __init cgroup_disable(char *str)
  }
  __setup("cgroup_disable=", cgroup_disable);
  
@@ -93,6 +93,3 @@ index 4cb09fcdc16f6..de8b4fa1e1fd6 100644
  void __init __weak enable_debug_cgroup(void) { }
  
  static int __init enable_cgroup_debug(char *str)
--- 
-2.35.3
-

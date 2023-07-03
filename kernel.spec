@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 1229967a3
+%global rpi_gitshort dc419608f
 
 %global build_release %{baserelease}
 
@@ -114,7 +114,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 28
+%define stable_update 36
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -1652,6 +1652,11 @@ fi
 
 
 %changelog
+* Fri Jun 30 2023 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.1.36-1.rpi
+- Update to stable kernel patch v6.1.36
+- Sync RPi patch to git revision: dc419608fb4e13bf1e33e6add31860730dd953fa
+- Rebase 0001-Revert-cgroup-Disable-cgroup-memory-by-default.patch
+
 * Tue May 16 2023 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.1.28-1.rpi
 - Update to stable kernel patch v6.1.28
 - Sync RPi patch to git revision: 1229967a3ab861660b6d31ccdc8526bd44712b13
