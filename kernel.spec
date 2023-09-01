@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 5fb3b3005
+%global rpi_gitshort 9b79cb06a
 
 %global build_release %{baserelease}
 
@@ -114,14 +114,14 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 42
+%define stable_update 50
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
 %define stable_base %{stable_update}
 %endif
-%define rpmversion 6.%{base_sublevel}.%{stable_update}
+%define pkg_version 6.%{base_sublevel}.%{stable_update}
 
 ## The not-released-kernel case ##
 %else
@@ -132,7 +132,7 @@
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
-%define rpmversion 5.%{upstream_sublevel}.0
+%define pkg_version 6.%{upstream_sublevel}.0
 %endif
 # Nb: The above rcrev and gitrev values automagically define Source1 and Source2 below.
 
@@ -247,7 +247,7 @@ Summary: The BCM2708 Linux kernel port for the Raspberry Pi Model A, B and Zero
 URL: https://github.com/raspberrypi/linux
 %endif
 
-Version: %{rpmversion}
+Version: %{pkg_version}
 Release: %{pkg_release}
 ExclusiveArch: %{arm} aarch64
 Requires: kernel-core-uname-r = %{KVERREL}
@@ -393,8 +393,8 @@ The kernel meta package
 # macros defined above.
 #
 %define kernel_reqprovconf \
-Provides: kernel = %{rpmversion}-%{pkg_release}\
-Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:+%{1}}\
+Provides: kernel = %{pkg_version}-%{pkg_release}\
+Provides: kernel-%{_target_cpu} = %{pkg_version}-%{pkg_release}%{?1:+%{1}}\
 Provides: kernel-drm-nouveau = 16\
 Provides: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires(pre): %{kernel_prereq}\
@@ -419,8 +419,8 @@ Summary: Header files for the Linux kernel for use by glibc
 Obsoletes: glibc-kernheaders < 3.0-46
 Provides: glibc-kernheaders = 3.0-46
 %if "0%{?variant}"
-Obsoletes: kernel-headers < %{rpmversion}-%{pkg_release}
-Provides: kernel-headers = %{rpmversion}-%{pkg_release}
+Obsoletes: kernel-headers < %{pkg_version}-%{pkg_release}
+Provides: kernel-headers = %{pkg_version}-%{pkg_release}
 %endif
 
 %description headers
@@ -1652,6 +1652,11 @@ fi
 
 
 %changelog
+* Fri Sep 01 2023 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.1.50-1.rpi
+- Update to stable kernel patch v6.1.50
+- Sync RPi patch to git revision: 9b79cb06ad370cfd5fc52f7d85d82bdcff701828
+- Rename rpmversion -> pkg_version to avoid build error on >=F39
+
 * Fri Jul 28 2023 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.1.42-1.rpi
 - Update to stable kernel patch v6.1.42
 - Sync RPi patch to git revision: 5fb3b300557d6a6902e7321f42fdabb8c09eef54
