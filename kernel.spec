@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 77fc1fbcb
+%global rpi_gitshort 841bb8e98
 
 %global build_release %{baserelease}
 
@@ -108,13 +108,13 @@
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 1
+%define base_sublevel 6
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 77
+%define stable_update 21
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -333,7 +333,7 @@ Source1200: config-lpae.cfg
 
 # rt kernel patch
 %if %{enable_preempt}
-Source1500: linux-rpi-5.%{base_sublevel}.y-rt%{rtrelease}-%{rtgitsnap}.patch.xz
+Source1500: linux-rpi-6.%{base_sublevel}.y-rt%{rtrelease}-%{rtgitsnap}.patch.xz
 %endif
 # rt kernel config modification
 Source1501: config-rt.cfg
@@ -361,7 +361,7 @@ Source2: https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.%{upstream_subleve
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-Source1: https://www.kernel.org/pub/linux/kernel/v6.x/patch-5.%{base_sublevel}-git%{gitrev}.xz
+Source1: https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 %endif
@@ -373,7 +373,6 @@ Patch100: bcm270x-linux-rpi-6.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
 
 ## Patches for both builds (bcm270x & bcm283x)
 Patch140: 0001-Revert-cgroup-Disable-cgroup-memory-by-default.patch
-Patch150: 0001-perf-build-fix-epel8.patch
 
 # Custom bootup logo
 Patch200: bootup-logo.patch
@@ -754,7 +753,7 @@ ApplyOptionalPatch()
 
 # Build a list of the other top-level kernel tree directories.
 # This will be used to hardlink identical vanilla subdirs.
-sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-5.*' \
+sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-6.*' \
             | grep -x -v "$PWD"/kernel-%{kversion}%{?dist}) ||:
 
 # Delete all old stale trees.
@@ -1652,6 +1651,11 @@ fi
 
 
 %changelog
+* Fri Mar 15 2024 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.6.21-1.rpi
+- Update to stable kernel patch v6.6.21
+- Sync RPi patch to git revision: 841bb8e98b3383fdb98b43251923b94e6c86f1cf
+- Remove 0001-perf-build-fix-epel8.patch
+
 * Fri Feb 09 2024 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.1.77-1.rpi
 - Update to stable kernel patch v6.1.77
 - Sync RPi patch to git revision: 77fc1fbcb5c013329af9583307dd1ff3cd4752aa
