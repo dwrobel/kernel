@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort cd92a9591
+%global rpi_gitshort 485d11cfa
 
 %global build_release %{baserelease}
 
@@ -114,7 +114,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 34
+%define stable_update 42
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -272,6 +272,9 @@ BuildRequires: m4
 BuildRequires: make
 BuildRequires: net-tools
 BuildRequires: openssl-devel
+%if 0%{?fedora} >= 41
+BuildRequires: openssl-devel-engine
+%endif
 BuildRequires: patch
 BuildRequires: perl-interpreter
 BuildRequires: perl-Carp
@@ -1651,6 +1654,10 @@ fi
 
 
 %changelog
+* Fri Jul 26 2024 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.6.42-1.rpi
+- Update to stable kernel patch v6.6.42
+- Sync RPi patch to git revision: 485d11cfa7df2d2deb39c9b3455cebcb1a85cea2
+
 * Tue Jun 18 2024 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.6.34-1.rpi
 - Update to stable kernel patch v6.6.34
 - Sync RPi patch to git revision: cd92a9591833ea06d1f12391f6b027fcecf436a9
