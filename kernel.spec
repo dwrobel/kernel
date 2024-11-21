@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 1af976d47
+%global rpi_gitshort 75ab92b07
 
 %global build_release %{baserelease}
 
@@ -114,7 +114,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 58
+%define stable_update 62
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -375,7 +375,7 @@ Source1: https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.%{base_sublevel}-g
 Patch100: bcm270x-linux-rpi-6.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
 
 ## Patches for both builds (bcm270x & bcm283x)
-Patch140: 0001-Revert-cgroup-Disable-cgroup-memory-by-default.patch
+Patch140: 0001-Revert-Use-kernel-command-line-to-disable-memory-cgr.patch
 
 # Custom bootup logo
 Patch200: bootup-logo.patch
@@ -1654,6 +1654,12 @@ fi
 
 
 %changelog
+* Thu Nov 21 2024 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.6.62-1.rpi
+- Update to stable kernel patch v6.6.62
+- Sync RPi patch to git revision: 75ab92b077602734458f0a77e19a3599be29b93b
+- Remove 0001-Revert-cgroup-Disable-cgroup-memory-by-default.patch
+- Add 0001-Revert-Use-kernel-command-line-to-disable-memory-cgr.patch
+
 * Wed Oct 23 2024 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.6.58-1.rpi
 - Update to stable kernel patch v6.6.58
 - Sync RPi patch to git revision: 1af976d476424009ac9d93313a9fad9cbb5498ae

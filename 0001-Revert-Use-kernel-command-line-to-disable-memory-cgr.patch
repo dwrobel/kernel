@@ -1,0 +1,111 @@
+From bb4b03354872b832979caf46404b562c7e73068c Mon Sep 17 00:00:00 2001
+From: Damian Wrobel <dwrobel@ertelnet.rybnik.pl>
+Date: Thu, 21 Nov 2024 21:37:05 +0100
+Subject: [PATCH] Revert Use kernel command line to disable memory cgroup
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Revert partially the following commit to have
+cgroup enabled by default in Fedora:
+ $ git show 86099deff5abf5f63643eecaedb4c11ae77474ce | filterdiff -i '*/**/*.dtsi' | lsdiff
+ a/arch/arm/boot/dts/broadcom/bcm2708-rpi-bt.dtsi
+ a/arch/arm/boot/dts/broadcom/bcm270x.dtsi
+ a/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi
+ a/arch/arm/boot/dts/broadcom/bcm271x-rpi-bt.dtsi
+ a/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
+
+commit 86099deff5abf5f63643eecaedb4c11ae77474ce
+Author: Maíra Canal <mcanal@igalia.com>
+Date:   Thu Oct 24 08:03:19 2024 -0300
+
+    cgroup: Use kernel command line to disable memory cgroup
+
+    Commit 94a23e978235 ("cgroup: Disable cgroup "memory" by default")
+    disabled the memory cgroup by default when initing the cgroups. However,
+    it's possible to disable the memory cgroup by a kernel command line.
+    Hard-coding such a feature can be problematic as some memory management
+    features depend on the order that things are set.
+
+    For example, it is possible to see a NULL pointer dereference caused by
+    commit 94a23e978235cd35f38075072b34152b2b667e6e. The NULL pointer
+    dereference is triggered by the memory shrinker and ends up in a kernel
+    crash.
+
+Signed-off-by: Damian Wrobel <dwrobel@ertelnet.rybnik.pl>
+---
+ arch/arm/boot/dts/broadcom/bcm2708-rpi-bt.dtsi | 2 +-
+ arch/arm/boot/dts/broadcom/bcm270x.dtsi        | 2 +-
+ arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi | 2 +-
+ arch/arm/boot/dts/broadcom/bcm271x-rpi-bt.dtsi | 2 +-
+ arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi  | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/broadcom/bcm2708-rpi-bt.dtsi b/arch/arm/boot/dts/broadcom/bcm2708-rpi-bt.dtsi
+index 87a6c00bd0562..ef7f9ca824259 100644
+--- a/arch/arm/boot/dts/broadcom/bcm2708-rpi-bt.dtsi
++++ b/arch/arm/boot/dts/broadcom/bcm2708-rpi-bt.dtsi
+@@ -24,7 +24,7 @@ minibt: bluetooth {
+ 
+ / {
+ 	chosen {
+-		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 cgroup_disable=memory";
++		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0";
+ 	};
+ 
+ 	aliases {
+diff --git a/arch/arm/boot/dts/broadcom/bcm270x.dtsi b/arch/arm/boot/dts/broadcom/bcm270x.dtsi
+index e077bd2711230..c318080eb8833 100644
+--- a/arch/arm/boot/dts/broadcom/bcm270x.dtsi
++++ b/arch/arm/boot/dts/broadcom/bcm270x.dtsi
+@@ -4,7 +4,7 @@
+ / {
+ 	chosen: chosen {
+ 		// Disable audio by default
+-		bootargs = "coherent_pool=1M snd_bcm2835.enable_headphones=0 cgroup_disable=memory";
++		bootargs = "coherent_pool=1M snd_bcm2835.enable_headphones=0";
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi b/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi
+index eb3abcdbae6ba..1757bb4c7a244 100644
+--- a/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi
++++ b/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi
+@@ -3,7 +3,7 @@
+ 
+ / {
+ 	chosen {
+-		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 cgroup_disable=memory numa_policy=interleave";
++		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 numa_policy=interleave";
+ 	};
+ 
+ 	__overrides__ {
+diff --git a/arch/arm/boot/dts/broadcom/bcm271x-rpi-bt.dtsi b/arch/arm/boot/dts/broadcom/bcm271x-rpi-bt.dtsi
+index c77e280ccd163..ba389fa3c43af 100644
+--- a/arch/arm/boot/dts/broadcom/bcm271x-rpi-bt.dtsi
++++ b/arch/arm/boot/dts/broadcom/bcm271x-rpi-bt.dtsi
+@@ -24,7 +24,7 @@ minibt: bluetooth {
+ 
+ / {
+ 	chosen {
+-		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 cgroup_disable=memory";
++		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0";
+ 	};
+ 
+ 	aliases {
+diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi b/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
+index 2317c2d86e888..0a35a8ac07fcd 100644
+--- a/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
++++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
+@@ -103,7 +103,7 @@ pio: &rp1_pio {
+ 
+ / {
+ 	chosen: chosen {
+-		bootargs = "reboot=w coherent_pool=1M 8250.nr_uarts=1 pci=pcie_bus_safe cgroup_disable=memory numa_policy=interleave";
++		bootargs = "reboot=w coherent_pool=1M 8250.nr_uarts=1 pci=pcie_bus_safe numa_policy=interleave";
+ 		stdout-path = "serial10:115200n8";
+ 	};
+ 
+-- 
+2.40.1
+
