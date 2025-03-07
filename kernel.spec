@@ -68,7 +68,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 081eebdec
@@ -1654,6 +1654,9 @@ fi
 
 
 %changelog
+* Fri Mar 7 2025 Robert Mader <robert.mader@collabora.com> - 6.6.77-2.rpi
+- Add CONFIG_UDMABUF to config-bcm27xx.cfg
+
 * Fri Feb 14 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.6.77-1.rpi
 - Update to stable kernel patch v6.6.77
 - Sync RPi patch to git revision: 081eebdeccfd12e0aaba4b64c9f87b608777913b
