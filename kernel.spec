@@ -71,7 +71,7 @@
 %global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 9da8d6df2
+%global rpi_gitshort 1af55c553
 
 %global build_release %{baserelease}
 
@@ -108,13 +108,13 @@
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 6
+%define base_sublevel 12
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 78
+%define stable_update 22
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -1654,6 +1654,10 @@ fi
 
 
 %changelog
+* Tue Apr 15 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.22-1.rpi
+- Update to stable kernel patch v6.12.22
+- Sync RPi patch to git revision: 1af55c553f3b793667e8adf834e1e59deb23d8c0
+
 * Fri Mar 21 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.6.78-1.rpi
 - Update to stable kernel patch v6.6.78
 - Sync RPi patch to git revision: 9da8d6df2051478f0ba16d73c65995955c19cb3a
