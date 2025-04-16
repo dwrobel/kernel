@@ -68,7 +68,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 1af55c553
@@ -977,7 +977,7 @@ BuildKernel() {
     make bcm2711_defconfig
     %else
     %ifarch aarch64
-    make bcmrpi3_defconfig
+    make bcm2711_defconfig
     %else
     make bcm2709_defconfig
     %endif
@@ -1654,6 +1654,9 @@ fi
 
 
 %changelog
+* Wed Apr 16 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.22-3.rpi
+- Use kernel 'bcm2711_defconfig' for aarch64 on RPi3.
+
 * Wed Apr 16 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.22-2.rpi
 - Adjust module compression kernel option name for v6.12.x
 
