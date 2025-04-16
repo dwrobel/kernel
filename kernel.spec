@@ -68,7 +68,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 1af55c553
@@ -1654,6 +1654,9 @@ fi
 
 
 %changelog
+* Wed Apr 16 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.22-2.rpi
+- Adjust module compression kernel option name for v6.12.x
+
 * Tue Apr 15 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.22-1.rpi
 - Update to stable kernel patch v6.12.22
 - Sync RPi patch to git revision: 1af55c553f3b793667e8adf834e1e59deb23d8c0
