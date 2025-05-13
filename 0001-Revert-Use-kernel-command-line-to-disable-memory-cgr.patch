@@ -1,6 +1,6 @@
-From bb4b03354872b832979caf46404b562c7e73068c Mon Sep 17 00:00:00 2001
+From 8cb484b1f9630a2fd1477be09df081f400e04df6 Mon Sep 17 00:00:00 2001
 From: Damian Wrobel <dwrobel@ertelnet.rybnik.pl>
-Date: Thu, 21 Nov 2024 21:37:05 +0100
+Date: Tue, 13 May 2025 17:26:00 +0200
 Subject: [PATCH] Revert Use kernel command line to disable memory cgroup
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,6 +33,7 @@ Date:   Thu Oct 24 08:03:19 2024 -0300
     crash.
 
 Signed-off-by: Damian Wrobel <dwrobel@ertelnet.rybnik.pl>
+
 ---
  arch/arm/boot/dts/broadcom/bcm2708-rpi-bt.dtsi | 2 +-
  arch/arm/boot/dts/broadcom/bcm270x.dtsi        | 2 +-
@@ -55,7 +56,7 @@ index 87a6c00bd0562..ef7f9ca824259 100644
  
  	aliases {
 diff --git a/arch/arm/boot/dts/broadcom/bcm270x.dtsi b/arch/arm/boot/dts/broadcom/bcm270x.dtsi
-index e077bd2711230..c318080eb8833 100644
+index 678bee7d96e7c..187f95f93a203 100644
 --- a/arch/arm/boot/dts/broadcom/bcm270x.dtsi
 +++ b/arch/arm/boot/dts/broadcom/bcm270x.dtsi
 @@ -4,7 +4,7 @@
@@ -68,15 +69,15 @@ index e077bd2711230..c318080eb8833 100644
  	};
  
 diff --git a/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi b/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi
-index eb3abcdbae6ba..1757bb4c7a244 100644
+index 4773b7bd26743..ba5f2f1494fbf 100644
 --- a/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi
 +++ b/arch/arm/boot/dts/broadcom/bcm2711-rpi-ds.dtsi
 @@ -3,7 +3,7 @@
  
  / {
  	chosen {
--		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 cgroup_disable=memory numa_policy=interleave";
-+		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 numa_policy=interleave";
+-		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 cgroup_disable=memory numa_policy=interleave nvme.max_host_mem_size_mb=0";
++		bootargs = "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 numa_policy=interleave nvme.max_host_mem_size_mb=0";
  	};
  
  	__overrides__ {
@@ -94,15 +95,15 @@ index c77e280ccd163..ba389fa3c43af 100644
  
  	aliases {
 diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi b/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
-index 2317c2d86e888..0a35a8ac07fcd 100644
+index f9d574c266f97..9518ef0521305 100644
 --- a/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
 +++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
-@@ -103,7 +103,7 @@ pio: &rp1_pio {
+@@ -97,7 +97,7 @@ pio: &rp1_pio {
  
  / {
  	chosen: chosen {
--		bootargs = "reboot=w coherent_pool=1M 8250.nr_uarts=1 pci=pcie_bus_safe cgroup_disable=memory numa_policy=interleave";
-+		bootargs = "reboot=w coherent_pool=1M 8250.nr_uarts=1 pci=pcie_bus_safe numa_policy=interleave";
+-		bootargs = "reboot=w coherent_pool=1M 8250.nr_uarts=1 pci=pcie_bus_safe cgroup_disable=memory numa_policy=interleave nvme.max_host_mem_size_mb=0";
++		bootargs = "reboot=w coherent_pool=1M 8250.nr_uarts=1 pci=pcie_bus_safe numa_policy=interleave nvme.max_host_mem_size_mb=0";
  		stdout-path = "serial10:115200n8";
  	};
  

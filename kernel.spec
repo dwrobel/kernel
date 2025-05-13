@@ -68,10 +68,10 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 1af55c553
+%global rpi_gitshort 95ac2a019
 
 %global build_release %{baserelease}
 
@@ -114,7 +114,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 22
+%define stable_update 27
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -1654,6 +1654,11 @@ fi
 
 
 %changelog
+* Tue May 13 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.27-1.rpi
+- Update to stable kernel patch v6.12.27
+- Sync RPi patch to git revision: 95ac2a019825f41dc494dc518c1eada83efcd220
+- Rebase 0001-Revert-Use-kernel-command-line-to-disable-memory-cgr.patch
+
 * Wed Apr 16 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.22-3.rpi
 - Use kernel 'bcm2711_defconfig' for aarch64 on RPi3.
 
