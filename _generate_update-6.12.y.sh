@@ -11,7 +11,7 @@ set -euxo pipefail
 # stable	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git (fetch)
 # stable	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git (push)
 
-last_rebase=$(git log --format="%H %s" -n50 | grep ' Linux 6.' | head -n 1)
+last_rebase=$(git log stable/linux-6.12.y --format="%H %s" -n50 | grep ' Linux 6.' | head -n 1)
 
 sha_tag=$(echo $last_rebase | awk '{print $1}')
 sha_head=$(git rev-parse HEAD)
