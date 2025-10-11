@@ -51,6 +51,9 @@
 # Build a bcm2711 (RPi4) kernel
 %define with_rpi4       %{?_with_rpi4:       1} %{?!_with_rpi4: 0}
 
+# Build a bcm2712 (RPi5) kernel
+%define with_rpi5       %{?_with_rpi5:       1} %{?!_with_rpi5: 0}
+
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
@@ -68,7 +71,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 2f4a28199
@@ -100,6 +103,13 @@
 
 %if %{with_rpi4}
 %global variant -rpi4
+%global with_tools 0
+%global with_perf 0
+%global with_lpae 0
+%endif
+
+%if %{with_rpi5}
+%global variant -rpi5
 %global with_tools 0
 %global with_perf 0
 %global with_lpae 0
@@ -158,10 +168,14 @@
 
 %if %{with_bcm270x}
  %define bcm270x 1
- %if %{with_rpi4}
-  %define Flavour rpi4
+ %if %{with_rpi5}
+   %define Flavour rpi5
  %else
-  %define Flavour rpi
+  %if %{with_rpi4}
+   %define Flavour rpi4
+  %else
+   %define Flavour rpi
+  %endif
  %endif
  %define buildid .%{Flavour}
 %else
@@ -236,10 +250,14 @@ Summary: The Linux kernel for the Raspberry Pi (BCM283x)
 URL: http://www.kernel.org
 %else
 %if "%{_target_cpu}" != "armv6hl"
+%if %{with_rpi5}
+Summary: The BCM2712 Linux kernel port for the Raspberry Pi 5 Model B
+%else
 %if %{with_rpi4}
 Summary: The BCM2711 Linux kernel port for the Raspberry Pi 4 Model B
 %else
 Summary: The BCM2709 Linux kernel port for the Raspberry Pi 2 and 3 Model B
+%endif
 %endif
 %else
 Summary: The BCM2708 Linux kernel port for the Raspberry Pi Model A, B and Zero
@@ -647,10 +665,14 @@ Provides: installonlypkg(kernel)\
 # The main -core package
 %if %{bcm270x}
 %if "%{_target_cpu}" == "armv7hl"
+%if %{with_rpi5}
+%define variant_summary The Linux kernel for the Raspberry Pi 5 Model B
+%else
 %if %{with_rpi4}
 %define variant_summary The Linux kernel for the Raspberry Pi 4 Model B
 %else
 %define variant_summary The Linux kernel for the Raspberry Pi 2/3 Model B
+%endif
 %endif
 %else
 %define variant_summary The Linux kernel for the Raspberry Pi Model A, B & Zero
@@ -973,6 +995,9 @@ BuildKernel() {
     %endif
     %if %{bcm270x}
     %if "%{_target_cpu}" != "armv6hl"
+    %if %{with_rpi5}
+    make bcm2712_defconfig
+    %else
     %if %{with_rpi4}
     make bcm2711_defconfig
     %else
@@ -980,6 +1005,7 @@ BuildKernel() {
     make bcm2711_defconfig
     %else
     make bcm2709_defconfig
+    %endif
     %endif
     %endif
     %else
@@ -1449,6 +1475,9 @@ fi\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 mkdir -p /%{image_install_path}/efi/overlays\
 %if "%{_target_cpu}" != "armv6hl"\
+%if %{with_rpi5}\
+cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/%{install_name} /%{image_install_path}/efi/kernel_2712.img\
+%else\
 %if %{with_rpi4}\
 %ifarch aarch64\
 cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/%{install_name} /%{image_install_path}/efi/kernel8.img\
@@ -1457,6 +1486,7 @@ cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/%{install_name} /%{image_install_path}/
 %endif\
 %else\
 cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/%{install_name} /%{image_install_path}/efi/kernel7.img\
+%endif\
 %endif\
 %else\
 cp -f /lib/modules/%{KVERREL}%{?1:+%{1}}/%{install_name} /%{image_install_path}/efi/kernel.img\
@@ -1654,6 +1684,9 @@ fi
 
 
 %changelog
+* Sat Oct 11 2025 Ivan Mironov <mironov.ivan@gmail.com> - 6.12.49-2.rpi
+- Add rpi5 flavor with 16k page size
+
 * Fri Oct 03 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.49-1.rpi
 - Update to stable kernel patch v6.12.49
 - Sync RPi patch to git revision: 2f4a28199c418599ba0224186e42926b482b523c
