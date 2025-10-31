@@ -71,10 +71,10 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 2f4a28199
+%global rpi_gitshort 78fd5c93f
 
 %global build_release %{baserelease}
 
@@ -124,7 +124,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 49
+%define stable_update 56
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -1684,6 +1684,10 @@ fi
 
 
 %changelog
+* Fri Oct 31 2025 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.56-1.rpi
+- Update to stable kernel patch v6.12.56
+- Sync RPi patch to git revision: 78fd5c93f1568d0dac7c56ee3d497739a63b058e
+
 * Sat Oct 11 2025 Ivan Mironov <mironov.ivan@gmail.com> - 6.12.49-2.rpi
 - Add rpi5 flavor with 16k page size
 
