@@ -71,7 +71,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 89de6844d
@@ -394,6 +394,8 @@ Patch100: bcm270x-linux-rpi-6.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
 
 ## Patches for both builds (bcm270x & bcm283x)
 Patch140: 0001-Revert-Use-kernel-command-line-to-disable-memory-cgr.patch
+
+Patch150: https://github.com/raspberrypi/linux/commit/98b8a19aab6f76f98451308132b3b003621c5ea0.patch#/gcc-8.5.x-fix-for-hifiberry_studio_dac8x.patch
 
 # Custom bootup logo
 Patch200: bootup-logo.patch
@@ -1684,6 +1686,9 @@ fi
 
 
 %changelog
+* Fri Jan 30 2026 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.67-2.rpi
+- Fix for gcc-8.5.x compilation error
+
 * Thu Jan 29 2026 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.12.67-1.rpi
 - Update to stable kernel patch v6.12.67
 - Sync RPi patch to git revision: 89de6844d446eee68f85b35809d2d696fa7fc1e8
