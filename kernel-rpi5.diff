@@ -1,0 +1,13 @@
+diff --git a/kernel.spec b/kernel.spec
+index 6c8000a..38ba8cd 100644
+--- a/kernel.spec
++++ b/kernel.spec
+@@ -52,7 +52,7 @@
+ %define with_rpi4       %{?_with_rpi4:       1} %{?!_with_rpi4: 0}
+ 
+ # Build a bcm2712 (RPi5) kernel
+-%define with_rpi5       %{?_with_rpi5:       1} %{?!_with_rpi5: 0}
++%define with_rpi5       %{?_with_rpi5:       0} %{?!_with_rpi5: 1}
+ 
+ # For a stable, released kernel, released_kernel should be 1. For rawhide
+ # and/or a kernel built from an rc or git snapshot, released_kernel should
