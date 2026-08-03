@@ -34,6 +34,9 @@ drmdrvs="ast gma500 mgag200 via nouveau vc4"
 
 singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs iscsi_tcp megaraid pmcraid qla1280 9pnet_rdma svcrdma xprtrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject target_core_user ucb1400_core wm97xx-ts"
 
+# Exceptions (things we don't want to filter out)
+exceptions="drivers/media/cec"
+
 # Grab the arch-specific filter list overrides
 #source ./filter-$2.sh
 
@@ -133,6 +136,13 @@ filter_dir $1 kernel/sound
 for mod in ${singlemods}
 do
         filter_ko $1 ${mod}
+done
+
+# Handle exceptions
+for e in ${exceptions}
+do
+	grep    ${e} k-d.list >> $1
+	grep -v ${e} k-d.list > k-d.list.tmp && mv k-d.list.tmp k-d.list
 done
 
 # Go through our generated drivers list and remove the .ko files.  We'll
