@@ -71,7 +71,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 3e4afe460
@@ -290,9 +290,6 @@ BuildRequires: m4
 BuildRequires: make
 BuildRequires: net-tools
 BuildRequires: openssl-devel
-%if 0%{?fedora} >= 41
-BuildRequires: openssl-devel-engine
-%endif
 BuildRequires: patch
 BuildRequires: perl-interpreter
 BuildRequires: perl-Carp
@@ -1684,6 +1681,9 @@ fi
 
 
 %changelog
+* Tue Aug 04 2026 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.18.42-2.rpi
+- Fix for >=f45
+
 * Mon Aug 03 2026 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.18.42-1.rpi
 - Update to stable kernel patch v6.18.42
 - Sync RPi patch to git revision: 3e4afe46075609841950d970bd23efddc1c30fd2
