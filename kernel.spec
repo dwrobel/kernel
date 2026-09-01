@@ -1137,9 +1137,6 @@ BuildKernel() {
     # external modules can be built
     touch -r %{buildroot}/lib/modules/$KernelVer/build/Makefile %{buildroot}/lib/modules/$KernelVer/build/include/generated/uapi/linux/version.h
 
-    # Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
-    cp %{buildroot}/lib/modules/$KernelVer/build/.config %{buildroot}/lib/modules/$KernelVer/build/include/config/auto.conf
-
 %if %{with_debuginfo}
     eu-readelf -n vmlinux | grep "Build ID" | awk '{print $NF}' > vmlinux.id
     cp vmlinux.id %{buildroot}/lib/modules/$KernelVer/build/vmlinux.id
