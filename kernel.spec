@@ -582,6 +582,7 @@ Provides: installonlypkg(kernel)\
 AutoReqProv: no\
 Requires(pre): /usr/bin/find\
 Requires: perl\
+Requires: openssl-libs\
 %description %{?1:%{1}-}devel\
 This package provides kernel headers and makefiles sufficient to build modules\
 against the %{?2:%{2} }kernel package.\
@@ -1072,6 +1073,9 @@ BuildKernel() {
 %else
     %{make} ARCH=$Arch INSTALL_MOD_PATH=%{buildroot} INSTALL_MOD_STRIP=1 modules_install KERNELRELEASE=$KernelVer mod-fw=
 %endif
+
+    # Build scripts/sign-file which is required by akmods build system.
+    %{make} ARCH=$Arch CONFIG_MODULE_SIG_FORMAT=y scripts
 
     # And save the headers/makefiles etc for building modules against
     #
