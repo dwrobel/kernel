@@ -71,10 +71,10 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 
 # RaspberryPi foundation git snapshot (short)
-%global rpi_gitshort 3e4afe460
+%global rpi_gitshort e52b68e07
 
 %global build_release %{baserelease}
 
@@ -124,7 +124,7 @@
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 42
+%define stable_update 48
 
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -1686,6 +1686,10 @@ fi
 
 
 %changelog
+* Wed Sep 02 2026 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.18.48-1.rpi
+- Update to stable kernel patch v6.18.48
+- Sync RPi patch to git revision: e52b68e07297fadf64efabc25e0c24b36f13e092
+
 * Tue Aug 04 2026 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.18.42-2.rpi
 - Fix for >=f45
 
