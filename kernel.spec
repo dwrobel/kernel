@@ -578,10 +578,12 @@ Provides: kernel%{?1:-%{1}}-devel-%{_target_cpu} = %{version}-%{release}\
 Provides: kernel-devel-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
 Provides: kernel-devel = %{version}-%{release}%{?1:+%{1}}\
 Provides: kernel-devel-uname-r = %{KVERREL}%{?1:+%{1}}\
+Provides: kernel-devel-matched = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel)\
 AutoReqProv: no\
 Requires(pre): /usr/bin/find\
 Requires: perl\
+Requires: openssl-libs\
 %description %{?1:%{1}-}devel\
 This package provides kernel headers and makefiles sufficient to build modules\
 against the %{?2:%{2} }kernel package.\
@@ -1073,6 +1075,9 @@ BuildKernel() {
     %{make} ARCH=$Arch INSTALL_MOD_PATH=%{buildroot} INSTALL_MOD_STRIP=1 modules_install KERNELRELEASE=$KernelVer mod-fw=
 %endif
 
+    # Build scripts/sign-file which is required by akmods build system.
+    %{make} ARCH=$Arch CONFIG_MODULE_SIG_FORMAT=y scripts
+
     # And save the headers/makefiles etc for building modules against
     #
     # This all looks scary, but the end result is supposed to be:
@@ -1136,9 +1141,6 @@ BuildKernel() {
     # Make sure the Makefile and version.h have a matching timestamp so that
     # external modules can be built
     touch -r %{buildroot}/lib/modules/$KernelVer/build/Makefile %{buildroot}/lib/modules/$KernelVer/build/include/generated/uapi/linux/version.h
-
-    # Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
-    cp %{buildroot}/lib/modules/$KernelVer/build/.config %{buildroot}/lib/modules/$KernelVer/build/include/config/auto.conf
 
 %if %{with_debuginfo}
     eu-readelf -n vmlinux | grep "Build ID" | awk '{print $NF}' > vmlinux.id
