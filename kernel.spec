@@ -71,7 +71,7 @@
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 
 # RaspberryPi foundation git snapshot (short)
 %global rpi_gitshort 5d64d1ea7
@@ -392,6 +392,9 @@ Patch100: bcm270x-linux-rpi-6.%{base_sublevel}.y-%{rpi_gitshort}.patch.xz
 
 ## Patches for both builds (bcm270x & bcm283x)
 Patch140: 0001-Revert-Use-kernel-command-line-to-disable-memory-cgr.patch
+# Fix tools build against kernel-headers >= 7.3 (arm64 UAPI uses __u128 since d4bf9e08d412)
+# Upstream: 10a47fb67340 ("tools: linux/types.h: Add 128-bit integer types for arm64 UAPI structures")
+Patch141: 0001-tools-linux-types.h-Add-128-bit-integer-types-for-arm64-UAPI.patch
 
 # Custom bootup logo
 Patch200: bootup-logo.patch
@@ -1688,6 +1691,9 @@ fi
 
 
 %changelog
+* Tue Nov 10 2026 Manuel Fombuena <mfombuena@innovara.tech> - 6.18.57-2.rpi
+- Backport upstream 10a47fb67340 to fix tools build with kernel-headers >= 7.3 on aarch64
+
 * Mon Oct 19 2026 Damian Wrobel <dwrobel@ertelnet.rybnik.pl> - 6.18.57-1.rpi
 - Update to stable kernel patch v6.18.57
 - Sync RPi patch to git revision: 5d64d1ea73716526ed9c0ed184a9cb5f6042e32c
